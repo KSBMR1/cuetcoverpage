@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CUET Lab Report Cover — Editorial Edition</title>
+<style>
+    /* ============ RESET / BASE ============ */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+        margin: 0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: #eef2f7;
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* ============ APP LAYOUT ============ */
+    .app {
+        display: grid;
+        grid-template-columns: 400px 1fr;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* ============ SIDEBAR ============ */
+    .editor {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow: hidden;
+        background: linear-gradient(165deg, #12233d 0%, #0b1526 55%, #091120 100%);
+        box-shadow: 8px 0 32px rgba(9, 17, 32, .18);
+        position: relative;
+        z-index: 5;
+    }
+
+    .editor-head {
+        padding: 22px 22px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, .07);
+        flex-shrink: 0;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .brand-mark {
+        width: 40px; height: 40px;
+        border-radius: 12px;
+        display: grid; place-items: center;
+        font-weight: 800; font-size: 17px; color: #fff;
+        background: linear-gradient(135deg, #2f6bff, #c84b23);
+        box-shadow: 0 8px 20px -6px rgba(47, 107, 255, .7);
+        flex-shrink: 0;
+    }
+    .brand h1 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+        color: #ffffff;
+    }
+    .brand p {
+        margin: 2px 0 0;
+        font-size: 11.5px;
+        color: #7f93b0;
+    }
+
+    .editor-body {
+        flex: 1;
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        padding-bottom: 8px;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255,255,255,.16) transparent;
+    }
+    .editor-body::-webkit-scrollbar { width: 8px; }
+    .editor-body::-webkit-scrollbar-thumb {
+        background: rgba(255,255,255,.14);
+        border-radius: 99px;
+    }
+    .editor-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.24); }
+
+    .group {
+        padding: 16px 22px 18px;
+        border-bottom: 1px solid rgba(255, 255, 255, .055);
+    }
+    .group-title {
+        display: flex; align-items: center; gap: 8px;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: .16em;
+        text-transform: uppercase;
+        color: #5d7392;
+        margin-bottom: 14px;
+    }
+    .group-title::before {
+        content: "";
+        width: 6px; height: 6px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #4f8cff, #c84b23);
+        box-shadow: 0 0 10px rgba(79, 140, 255, .8);
+        flex-shrink: 0;
+    }
+
+    .field { margin-bottom: 12px; }
+    .field:last-child { margin-bottom: 0; }
+
+    .field label {
+        display: block;
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+        color: #7f93b0;
+        margin-bottom: 6px;
+    }
+
+    .field input[type="text"] {
+        width: 100%;
+        padding: 10px 13px;
+        font-size: 13px;
+        font-family: inherit;
+        color: #eef4ff;
+        background: rgba(255, 255, 255, .055);
+        border: 1px solid rgba(255, 255, 255, .11);
+        border-radius: 10px;
+        outline: none;
+        transition: border-color .18s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .field input[type="text"]::placeholder { color: #55688a; }
+    .field input[type="text"]:hover { background: rgba(255, 255, 255, .08); }
+    .field input[type="text"]:focus {
+        border-color: #4f8cff;
+        background: rgba(79, 140, 255, .1);
+        box-shadow: 0 0 0 3px rgba(79, 140, 255, .18);
+    }
+
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    .logo-row { display: flex; gap: 8px; }
+    .logo-row input[type="text"] { flex: 1; min-width: 0; }
+    .btn-upload {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 14px;
+        font-size: 11.5px;
+        font-weight: 700;
+        color: #cfe0ff;
+        background: rgba(79, 140, 255, .14);
+        border: 1px solid rgba(79, 140, 255, .38);
+        border-radius: 10px;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background .18s ease, transform .12s ease;
+    }
+    .btn-upload:hover { background: rgba(79, 140, 255, .26); }
+    .btn-upload:active { transform: scale(.97); }
+
+    .color-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .color-field {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 12px 8px 8px;
+        background: rgba(255, 255, 255, .055);
+        border: 1px solid rgba(255, 255, 255, .11);
+        border-radius: 10px;
+        transition: background .18s ease;
+    }
+    .color-field:hover { background: rgba(255, 255, 255, .08); }
+    .color-field span {
+        font-size: 10.5px;
+        font-weight: 600;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+        color: #9db0cc;
+    }
+    .color-field input[type="color"] {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 30px; height: 30px;
+        padding: 0;
+        border: 2px solid rgba(255,255,255,.22);
+        border-radius: 8px;
+        background: none;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .color-field input[type="color"]::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-field input[type="color"]::-webkit-color-swatch { border: none; border-radius: 5px; }
+    .color-field input[type="color"]::-moz-color-swatch { border: none; border-radius: 5px; }
+
+    .editor-foot {
+        flex-shrink: 0;
+        padding: 16px 22px 20px;
+        border-top: 1px solid rgba(255, 255, 255, .07);
+        background: rgba(9, 17, 32, .55);
+        backdrop-filter: blur(8px);
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+    }
+    .btn {
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 700;
+        padding: 12px 18px;
+        border-radius: 11px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: transform .12s ease, box-shadow .18s ease, background .18s ease;
+    }
+    .btn:active { transform: translateY(1px) scale(.99); }
+    .btn-primary {
+        color: #fff;
+        background: linear-gradient(135deg, #2f6bff, #1b4dd8);
+        box-shadow: 0 10px 24px -10px rgba(47, 107, 255, .95);
+    }
+    .btn-primary:hover { box-shadow: 0 14px 28px -10px rgba(47, 107, 255, 1); }
+    .btn-ghost {
+        color: #9db0cc;
+        background: rgba(255, 255, 255, .06);
+        border-color: rgba(255, 255, 255, .13);
+    }
+    .btn-ghost:hover { background: rgba(255, 255, 255, .12); color: #dbe6f7; }
+
+    /* ============ PREVIEW ============ */
+    .preview-area {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px;
+        overflow: auto;
+        background-color: #eef2f7;
+        background-image: radial-gradient(circle, #d2dbe7 1px, transparent 1px);
+        background-size: 22px 22px;
+    }
+    .preview-badge {
+        position: absolute;
+        top: 16px; left: 20px;
+        display: inline-flex; align-items: center; gap: 7px;
+        padding: 7px 14px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        color: #46597a;
+        background: rgba(255, 255, 255, .82);
+        border: 1px solid #d8e1ec;
+        border-radius: 99px;
+        backdrop-filter: blur(6px);
+        box-shadow: 0 4px 14px -6px rgba(15, 30, 54, .25);
+        pointer-events: none;
+        z-index: 2;
+    }
+    .preview-badge::before {
+        content: "";
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, .18);
+    }
+
+    .page-frame {
+        position: relative;
+        box-shadow: 0 26px 60px -18px rgba(15, 30, 54, .38),
+                    0 4px 14px -6px rgba(15, 30, 54, .22);
+        border-radius: 2px;
+    }
+    .page-scaler {
+        position: absolute;
+        top: 0; left: 0;
+        width: 210mm;
+        transform-origin: top left;
+    }
+
+    /* ==========================================================
+       A4 COVER — EDITORIAL GRID EDITION
+       ========================================================== */
+    @page { size: A4; margin: 0; }
+
+    .cover-page {
+        --ink: #16233a;
+        --ink-soft: rgba(22, 35, 58, .60);
+        --ink-faint: rgba(22, 35, 58, .16);
+        --accent: #c84b23;
+
+        width: 210mm;
+        height: 297mm;
+        background-color: #ffffff;
+        padding: 20mm 20mm 22mm;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        color: var(--ink);
+    }
+
+    /* Big ghost numeral */
+    .wm {
+        position: absolute;
+        top: 46mm;
+        right: 12mm;
+        font-size: 120px;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -.06em;
+        color: var(--ink);
+        opacity: .05;
+        pointer-events: none;
+        user-select: none;
+    }
+
+    /* --- Masthead --- */
+    .masthead {
+        display: flex;
+        align-items: center;
+        gap: 6mm;
+        position: relative;
+        z-index: 2;
+    }
+    .logo {
+        height: 18mm;
+        width: auto;
+        max-width: 34mm;
+        object-fit: contain;
+        flex-shrink: 0;
+    }
+    .masthead-divider {
+        width: 1px;
+        height: 15mm;
+        background: var(--ink-faint);
+        flex-shrink: 0;
+    }
+    .masthead-text { display: flex; flex-direction: column; gap: 1.6mm; }
+    .uni {
+        margin: 0;
+        font-size: 12.5px;
+        font-weight: 800;
+        letter-spacing: .045em;
+        text-transform: uppercase;
+        line-height: 1.32;
+        color: var(--ink);
+    }
+    .dept {
+        margin: 0;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: .2em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+    }
+
+    .rule-strong {
+        height: 2px;
+        background: var(--ink);
+        margin-top: 6mm;
+        position: relative;
+        z-index: 2;
+    }
+
+    /* --- Title block --- */
+    .title-block { margin-top: 15mm; position: relative; z-index: 2; }
+
+    .eyebrow {
+        display: flex;
+        align-items: center;
+        gap: 3mm;
+        font-size: 9.5px;
+        font-weight: 700;
+        letter-spacing: .26em;
+        text-transform: uppercase;
+        color: var(--accent);
+    }
+    .eyebrow .dot {
+        width: 5px; height: 5px;
+        border-radius: 50%;
+        background: var(--accent);
+        flex-shrink: 0;
+    }
+    .eyebrow .sep { opacity: .45; }
+
+    .exp-title {
+        margin: 5mm 0 0;
+        font-size: 30px;
+        font-weight: 800;
+        line-height: 1.22;
+        letter-spacing: -.012em;
+        color: var(--ink);
+        max-width: 152mm;
+    }
+
+    .title-rule {
+        width: 22mm;
+        height: 3px;
+        border-radius: 2px;
+        background: var(--accent);
+        margin-top: 6mm;
+    }
+
+    /* --- Data rows --- */
+    .data { margin-top: 14mm; position: relative; z-index: 2; }
+
+    .data > * { border-top: 1px solid var(--ink-faint); }
+    .data > *:last-child { border-bottom: 1px solid var(--ink-faint); }
+
+    .row {
+        display: flex;
+        align-items: baseline;
+        gap: 6mm;
+        padding: 3mm 0;
+    }
+    .row .k {
+        width: 42mm;
+        flex-shrink: 0;
+        font-size: 8.5px;
+        font-weight: 700;
+        letter-spacing: .17em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+    }
+    .row .v {
+        font-size: 13.5px;
+        font-weight: 600;
+        color: var(--ink);
+        word-break: break-word;
+    }
+
+    .grid4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        padding: 3.2mm 0 3.4mm;
+    }
+    .cell {
+        padding-left: 5mm;
+        border-left: 1px solid var(--ink-faint);
+    }
+    .cell:first-child { border-left: none; padding-left: 0; }
+    .cell .k {
+        display: block;
+        font-size: 8.5px;
+        font-weight: 700;
+        letter-spacing: .17em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 1.8mm;
+    }
+    .cell .v {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink);
+        word-break: break-word;
+    }
+
+    /* --- Date cards --- */
+    .dates {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6mm;
+        margin-top: 10mm;
+        position: relative;
+        z-index: 2;
+    }
+    .date-card {
+        border: 1px solid var(--ink-faint);
+        border-left: 3px solid var(--accent);
+        border-radius: 2px;
+        padding: 4mm 5mm;
+    }
+    .date-card .k {
+        display: block;
+        font-size: 8.5px;
+        font-weight: 700;
+        letter-spacing: .17em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 2.2mm;
+    }
+    .date-card .v {
+        display: block;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink);
+    }
+
+    /* --- Remarks --- */
+    .remarks {
+        margin-top: auto;
+        padding-top: 12mm;
+        position: relative;
+        z-index: 2;
+    }
+    .remarks .k {
+        display: block;
+        font-size: 8.5px;
+        font-weight: 700;
+        letter-spacing: .22em;
+        text-transform: uppercase;
+        color: var(--ink-soft);
+        margin-bottom: 3mm;
+    }
+    .remarks-box {
+        height: 30mm;
+        border: 1px solid var(--ink-faint);
+        border-radius: 2px;
+    }
+
+    /* --- Bottom accent bar --- */
+    .bottom-bar {
+        position: absolute;
+        left: 0; right: 0; bottom: 0;
+        height: 6mm;
+        background: var(--accent);
+        z-index: 3;
+    }
+
+    /* ==========================================================
+       RESPONSIVE
+       ========================================================== */
+    @media (max-width: 1024px) {
+        .app {
+            grid-template-columns: 1fr;
+            grid-template-rows: minmax(0, 52vh) minmax(0, 48vh);
+            height: auto;
+            min-height: 100vh;
+            overflow: visible;
+        }
+        .editor { height: auto; max-height: 52vh; }
+        .preview-area { height: 48vh; padding: 20px; }
+        .preview-badge { top: 10px; left: 12px; }
+    }
+
+    /* ==========================================================
+       PRINT
+       ========================================================== */
+    @media print {
+        html, body {
+            background: #ffffff !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            height: auto !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        .app { display: block !important; height: auto !important; overflow: visible !important; }
+        .editor, .preview-badge { display: none !important; }
+        .preview-area {
+            display: block !important;
+            padding: 0 !important;
+            background: #ffffff !important;
+            background-image: none !important;
+            overflow: visible !important;
+            height: auto !important;
+        }
+        .page-frame {
+            width: auto !important;
+            height: auto !important;
+            box-shadow: none !important;
+            border-radius: 0 !important;
+            margin: 0 !important;
+        }
+        .page-scaler {
+            position: static !important;
+            transform: none !important;
+            width: auto !important;
+        }
+        .cover-page {
+            margin: 0 !important;
+            page-break-after: avoid;
+            page-break-inside: avoid;
+        }
+    }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+    <!-- ======================= EDITOR ======================= -->
+    <aside class="editor">
+        <div class="editor-head">
+            <div class="brand">
+                <div class="brand-mark">E</div>
+                <div>
+                    <h1>Cover Page Studio</h1>
+                    <p>Editorial Grid · Design 02</p>
+                </div>
+            </div>
+        </div>
+
+        <form id="editorForm" class="editor-body" autocomplete="off">
+
+            <!-- Institution -->
+            <div class="group">
+                <div class="group-title">Institution</div>
+
+                <div class="field">
+                    <label for="logoInput">Logo</label>
+                    <div class="logo-row">
+                        <input id="logoInput" type="text" data-bind="logo" placeholder="Logo URL or upload →">
+                        <label class="btn-upload" for="logoFile">Upload</label>
+                        <input id="logoFile" type="file" accept="image/*" hidden>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="uniInput">University Name</label>
+                    <input id="uniInput" type="text" data-bind="university" spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label for="deptInput">Department</label>
+                    <input id="deptInput" type="text" data-bind="department" spellcheck="false">
+                </div>
+            </div>
+
+            <!-- Experiment -->
+            <div class="group">
+                <div class="group-title">Experiment</div>
+
+                <div class="field">
+                    <label for="expInput">Experiment Title</label>
+                    <input id="expInput" type="text" data-bind="experiment" spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label for="expNoInput">Experiment No.</label>
+                    <input id="expNoInput" type="text" data-bind="expNo" spellcheck="false">
+                </div>
+            </div>
+
+            <!-- Student -->
+            <div class="group">
+                <div class="group-title">Student Information</div>
+
+                <div class="field">
+                    <label for="nameInput">Name</label>
+                    <input id="nameInput" type="text" data-bind="name" spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label for="idInput">ID</label>
+                    <input id="idInput" type="text" data-bind="id" spellcheck="false">
+                </div>
+
+                <div class="row-2">
+                    <div class="field">
+                        <label for="levelInput">Level</label>
+                        <input id="levelInput" type="text" data-bind="level" spellcheck="false">
+                    </div>
+                    <div class="field">
+                        <label for="termInput">Term</label>
+                        <input id="termInput" type="text" data-bind="term" spellcheck="false">
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="field">
+                        <label for="sectionInput">Section</label>
+                        <input id="sectionInput" type="text" data-bind="section" spellcheck="false">
+                    </div>
+                    <div class="field">
+                        <label for="groupInput">Group</label>
+                        <input id="groupInput" type="text" data-bind="group" spellcheck="false">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Course & dates -->
+            <div class="group">
+                <div class="group-title">Course &amp; Dates</div>
+
+                <div class="field">
+                    <label for="courseInput">Course Code</label>
+                    <input id="courseInput" type="text" data-bind="course" spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label for="courseTitleInput">Course Title</label>
+                    <input id="courseTitleInput" type="text" data-bind="courseTitle" spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label for="dateExpInput">Date of Experiment</label>
+                    <input id="dateExpInput" type="text" data-bind="dateExp" placeholder="DD.MM.YYYY" spellcheck="false">
+                </div>
+
+                <div class="field">
+                    <label for="dateSubInput">Date of Submission</label>
+                    <input id="dateSubInput" type="text" data-bind="dateSub" placeholder="DD.MM.YYYY" spellcheck="false">
+                </div>
+            </div>
+
+            <!-- Style -->
+            <div class="group">
+                <div class="group-title">Style</div>
+                <div class="color-row">
+                    <div class="color-field">
+                        <input type="color" data-bind="ink" aria-label="Primary colour">
+                        <span>Primary</span>
+                    </div>
+                    <div class="color-field">
+                        <input type="color" data-bind="accent" aria-label="Accent colour">
+                        <span>Accent</span>
+                    </div>
+                </div>
+            </div>
+
+        </form>
+
+        <div class="editor-foot">
+            <button type="button" class="btn btn-primary" id="printBtn">Print / Save as PDF</button>
+            <button type="button" class="btn btn-ghost" id="resetBtn">Reset</button>
+        </div>
+    </aside>
+
+    <!-- ======================= PREVIEW ======================= -->
+    <main class="preview-area">
+        <div class="preview-badge">Live Preview · A4</div>
+
+        <div class="page-frame">
+            <div class="page-scaler">
+                <div class="cover-page" id="coverPage">
+
+                    <div class="wm" data-out="expNo"></div>
+
+                    <!-- Masthead -->
+                    <header class="masthead">
+                        <img class="logo" id="logoImg" src="" alt="University Logo">
+                        <div class="masthead-divider"></div>
+                        <div class="masthead-text">
+                            <p class="uni"><span data-out="university"></span></p>
+                            <p class="dept"><span data-out="department"></span></p>
+                        </div>
+                    </header>
+
+                    <div class="rule-strong"></div>
+
+                    <!-- Title -->
+                    <div class="title-block">
+                        <div class="eyebrow">
+                            <span class="dot"></span>
+                            <span>Laboratory Report</span>
+                            <span class="sep">/</span>
+                            <span>Experiment&nbsp;<span data-out="expNo"></span></span>
+                        </div>
+                        <h1 class="exp-title"><span data-out="experiment"></span></h1>
+                        <div class="title-rule"></div>
+                    </div>
+
+                    <!-- Data -->
+                    <section class="data">
+                        <div class="row">
+                            <span class="k">Name</span>
+                            <span class="v" data-out="name"></span>
+                        </div>
+                        <div class="row">
+                            <span class="k">ID</span>
+                            <span class="v" data-out="id"></span>
+                        </div>
+                        <div class="grid4">
+                            <div class="cell">
+                                <span class="k">Level</span>
+                                <span class="v" data-out="level"></span>
+                            </div>
+                            <div class="cell">
+                                <span class="k">Term</span>
+                                <span class="v" data-out="term"></span>
+                            </div>
+                            <div class="cell">
+                                <span class="k">Section</span>
+                                <span class="v" data-out="section"></span>
+                            </div>
+                            <div class="cell">
+                                <span class="k">Group</span>
+                                <span class="v" data-out="group"></span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <span class="k">Course</span>
+                            <span class="v" data-out="course"></span>
+                        </div>
+                        <div class="row">
+                            <span class="k">Course Title</span>
+                            <span class="v" data-out="courseTitle"></span>
+                        </div>
+                    </section>
+
+                    <!-- Dates -->
+                    <section class="dates">
+                        <div class="date-card">
+                            <span class="k">Date of Experiment</span>
+                            <span class="v" data-out="dateExp"></span>
+                        </div>
+                        <div class="date-card">
+                            <span class="k">Date of Submission</span>
+                            <span class="v" data-out="dateSub"></span>
+                        </div>
+                    </section>
+
+                    <!-- Remarks -->
+                    <section class="remarks">
+                        <span class="k">Remarks</span>
+                        <div class="remarks-box"></div>
+                    </section>
+
+                    <div class="bottom-bar"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+(function () {
+    'use strict';
+
+    var STORAGE_KEY = 'cuet-cover-editorial-v2';
+
+    var DEFAULTS = {
+        logo: 'https://lh3.googleusercontent.com/d/15XJG2_WxX8sO0EmiCgDzs71pQUGzJtg9',
+        university: 'Chittagong University of Engineering & Technology',
+        department: 'Department of Mechanical Engineering',
+        experiment: 'Estimation of Zinc and Copper from Analysis of Brass.',
+        name: 'KAZI SHAHNEWAZ',
+        id: '2503155',
+        level: '1',
+        term: '1',
+        section: 'C',
+        group: 'C-2',
+        course: 'CHEM-132',
+        courseTitle: 'CHEMISTRY',
+        expNo: '06',
+        dateExp: '13.09.2026',
+        dateSub: '15.11.2026',
+        ink: '#16233a',
+        accent: '#c84b23'
+    };
+
+    var cover    = document.getElementById('coverPage');
+    var form     = document.getElementById('editorForm');
+    var logoImg  = document.getElementById('logoImg');
+    var logoFile = document.getElementById('logoFile');
+    var frame    = document.querySelector('.page-frame');
+    var scaler   = document.querySelector('.page-scaler');
+    var area     = document.querySelector('.preview-area');
+
+    /* ---------- helpers ---------- */
+    function hexToRgba(hex, alpha) {
+        var h = String(hex || '#16233a').replace('#', '');
+        if (h.length === 3) h = h[0] + h[0] + h[1] + h[1] + h[2] + h[2];
+        var n = parseInt(h, 16);
+        if (isNaN(n)) return 'rgba(22,35,58,' + alpha + ')';
+        return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+    }
+
+    function readForm() {
+        var state = {};
+        form.querySelectorAll('[data-bind]').forEach(function (el) {
+            state[el.dataset.bind] = el.value;
+        });
+        return state;
+    }
+
+    function applyOutputs(state) {
+        document.querySelectorAll('[data-out]').forEach(function (el) {
+            var v = state[el.dataset.out];
+            el.textContent = (v === undefined || v === null) ? '' : v;
+        });
+
+        if (state.logo) {
+            if (logoImg.getAttribute('src') !== state.logo) logoImg.src = state.logo;
+        } else {
+            logoImg.removeAttribute('src');
+        }
+
+        cover.style.setProperty('--ink', state.ink || DEFAULTS.ink);
+        cover.style.setProperty('--ink-soft', hexToRgba(state.ink, 0.60));
+        cover.style.setProperty('--ink-faint', hexToRgba(state.ink, 0.16));
+        cover.style.setProperty('--accent', state.accent || DEFAULTS.accent);
+    }
+
+    function applyAll(state) {
+        form.querySelectorAll('[data-bind]').forEach(function (el) {
+            var v = state[el.dataset.bind];
+            if (v !== undefined && v !== null) el.value = v;
+        });
+        applyOutputs(state);
+    }
+
+    function save(state) {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) { /* ignore */ }
+    }
+
+    /* ---------- boot ---------- */
+    var saved = {};
+    try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') || {}; } catch (e) { saved = {}; }
+
+    applyAll(Object.assign({}, DEFAULTS, saved));
+
+    /* ---------- live editing ---------- */
+    form.addEventListener('input', function (e) {
+        if (e.target === logoFile) return;
+        var state = readForm();
+        applyOutputs(state);
+        save(state);
+    });
+
+    /* ---------- logo upload ---------- */
+    logoFile.addEventListener('change', function () {
+        var file = logoFile.files && logoFile.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function () {
+            document.querySelector('[data-bind="logo"]').value = reader.result;
+            var state = readForm();
+            applyOutputs(state);
+            save(state);
+        };
+        reader.readAsDataURL(file);
+    });
+
+    /* ---------- buttons ---------- */
+    document.getElementById('printBtn').addEventListener('click', function () {
+        window.print();
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', function () {
+        if (!window.confirm('Reset every field back to the default values?')) return;
+        applyAll(DEFAULTS);
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    });
+
+    /* ---------- fit A4 to viewport ---------- */
+    function fitPage() {
+        var pageW = scaler.offsetWidth  || 794;
+        var pageH = scaler.offsetHeight || 1123;
+        var pad = 64;
+        var availW = Math.max(area.clientWidth  - pad, 120);
+        var availH = Math.max(area.clientHeight - pad, 120);
+        var scale = Math.min(availW / pageW, availH / pageH, 1);
+
+        scaler.style.transform = 'scale(' + scale + ')';
+        frame.style.width  = (pageW * scale) + 'px';
+        frame.style.height = (pageH * scale) + 'px';
+    }
+
+    window.addEventListener('resize', fitPage);
+    window.addEventListener('orientationchange', fitPage);
+
+    if (window.ResizeObserver) new ResizeObserver(fitPage).observe(area);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitPage);
+    logoImg.addEventListener('load', fitPage);
+    window.addEventListener('load', fitPage);
+
+    fitPage();
+
+    /* ---------- Ctrl/Cmd + S → print ---------- */
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+            e.preventDefault();
+            window.print();
+        }
+    });
+})();
+</script>
+
+</body>
+</html>
